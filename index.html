@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Топонимы Прибайкалья — Яндекс Карта</title>
+<style>
+*{box-sizing:border-box}html,body,#map{height:100%;width:100%;margin:0;font-family:Arial,sans-serif;color:#203b3d}#map{position:fixed;inset:0}
+.header{position:fixed;z-index:5;top:16px;left:18px;background:#fffF;padding:14px 18px;border-radius:14px;box-shadow:0 5px 22px #173b3b24}.header small{font-size:9px;letter-spacing:2px;color:#28736e}.header h1{font-size:18px;margin:5px 0 0}
+.panel{position:fixed;z-index:5;left:18px;top:100px;bottom:18px;width:300px;background:#fffffff2;border-radius:15px;box-shadow:0 5px 25px #173b3b2a;padding:17px;overflow:auto}.panel h2{font-size:16px;margin:0 0 12px}.search{width:100%;padding:11px;border:1px solid #dce7e2;border-radius:8px;margin-bottom:10px}.filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.filters button{border:1px solid #dce7e2;background:white;border-radius:18px;padding:7px 9px;font-size:10px;cursor:pointer}.filters button.active{background:#286e70;color:white}.place{padding:11px 7px;border-bottom:1px solid #edf1ee;cursor:pointer;font-size:12px}.place:hover,.place.selected{background:#eff6f2}.place small{display:block;color:#778987;margin:4px 0 0 17px;font-size:10px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.card{position:fixed;z-index:6;right:18px;top:100px;bottom:18px;width:350px;max-height:calc(100% - 118px);background:#fffffff5;border-radius:16px;box-shadow:0 5px 28px #173b3b30;padding:22px;overflow:auto;display:none}.card.open{display:block}.close{float:right;border:0;border-radius:50%;width:30px;height:30px;cursor:pointer}.kind{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#28736e;margin-top:16px}.card h2{font-size:24px;margin:7px 0}.local{font-size:12px;color:#758783;font-style:italic;margin-bottom:20px}.card h3{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#568078;margin:18px 0 7px}.card p{font-size:12px;line-height:1.6;margin:0}.source{color:#778987;font-size:10px!important}.legend{position:fixed;z-index:4;bottom:18px;left:50%;transform:translateX(-50%);background:#fffffff2;padding:10px 14px;border-radius:12px;box-shadow:0 4px 18px #173b3b22;font-size:10px;display:flex;gap:14px;white-space:nowrap}.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.notice{position:fixed;z-index:8;right:18px;bottom:18px;max-width:330px;background:#203b3df2;color:white;padding:11px 14px;border-radius:10px;font-size:11px;line-height:1.5}.notice a{color:#c5e6df}
+@media(max-width:700px){.header{top:8px;left:8px;padding:10px 12px}.header h1{font-size:14px}.panel{left:8px;right:8px;top:75px;bottom:auto;width:auto;max-height:38%;padding:12px}.panel h2{font-size:14px}.card{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:55%;padding:17px}.legend{bottom:9px;font-size:9px;gap:8px;padding:8px}.notice{display:none}}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="header"><small>ИНТЕРАКТИВНЫЙ ЛИНГВИСТИЧЕСКИЙ АТЛАС</small><h1>Топонимы Прибайкалья</h1></div>
+<aside class="panel"><h2>Географические названия</h2><input id="search" class="search" placeholder="Поиск по названию…"><div class="filters"><button class="active" data-type="Все">Все</button><button data-type="Гидроним">Гидронимы</button><button data-type="Ороним">Оронимы</button><button data-type="Топоним">Топонимы</button></div><div id="list"></div></aside>
+<section class="card" id="card"><button class="close" id="close">×</button><div id="content"></div></section>
+<div class="legend"><span><i style="background:#238b91"></i>Гидронимы</span><span><i style="background:#c28a45"></i>Оронимы</span><span><i style="background:#748e65"></i>Топонимы</span></div>
+<div class="notice" id="notice">Для загрузки Яндекс Карты добавьте API-ключ в переменную <b>YANDEX_API_KEY</b> в коде. <a href="https://developer.tech.yandex.ru/keys/" target="_blank">Получить ключ</a>.</div>
+<script>
+/* Вставьте ключ JavaScript API Яндекс Карт. */
+const YANDEX_API_KEY="12625b17-90af-4a2e-8583-162136cc43a3";
+
+/* ===== ДАННЫЕ =====
+   coords — точка (центр) для метки или круга.
+   polygon (необязательно) — массив [lat,lng] для закраски территории.
+   radius (необязательно) — радиус круга в метрах (если нет polygon).
+*/
+const places=[
+{id:1,name:"Байкал",local:"Байгал / Байгал далай",type:"Гидроним",coords:[53.5,108],about:"Крупнейшее озеро Сибири и центральный географический объект региона.",etymology:"Существуют различные объяснения происхождения названия. Одна из распространённых гипотез связывает его с монгольскими и бурятскими языковыми формами.",variants:"Байкал; Байгал; Байгал далай.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:2,name:"Хидуса",local:"Хидуса / Хидусын-Дабан",type:"Гидроним",coords:[52.8,105.8],about:"Река, приток Бугульдейки, а также перевал между бассейнами Бугульдейки и Лены.",etymology:"От бурятского «хидуса» / «сюдаса» — «сражение» (военное).",variants:"Хидуса; Хидусын-Дабан (название перевала).",source:"Демонстрационный текст; требуется научная проверка."},
+{id:3,name:"Оса",local:"Уса / Уhан",type:"Гидроним",coords:[53.4,103.9],about:"Река и населённый пункт в Иркутской области.",etymology:"Название происходит от бурятского «уса» / «уhан» / «уhа», что означает «вода» или «река».",variants:"Оса; Уса; Уhан.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:4,name:"Гарган-дабан",local:"Гарган дабаан",type:"Ороним",coords:[52.8,101.5],about:"Горный отрог в верховьях реки Гарган (приток Оки) в Иркутской области.",etymology:"Компонент «дабан» — бурятское «перевал».",variants:"Гарган-дабан; Гарган дабаан.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:5,name:"Мельхитуй",local:"Мүльһэтэ",type:"Топоним",coords:[53.7,102.5],about:"Два населённых пункта в Нукутском районе Иркутской области (Русский Мельхитуй и Бурятский Мельхитуй).",etymology:"Название происходит от бурятского «мүльһэтэ» — «ледяной», что связано с характером местности или наличием ледяных источников.",variants:"Мельхитуй; Мүльһэтэ; Русский Мельхитуй; Бурятский Мельхитуй.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:6,name:"Аршан",local:"Аршаан",type:"Топоним",coords:[54.5,100.5],about:"Населённый пункт в Тулунском районе Иркутской области.",etymology:"От бурятского «аршаан» — «целебная вода, целебный источник». Название связано с наличием минеральных источников в этой местности.",variants:"Аршан; Аршаан.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:7,name:"Куйтун",local:"Хуйтэн",type:"Топоним",coords:[54.35,101.3],about:"Город и районный центр в Иркутской области.",etymology:"Название связывают с бурятским «хуйтэн» — «холодный», «холод».",variants:"Куйтун; Хуйтэн.",source:"Демонстрационный текст; требуется научная проверка."},
+{id:8,name:"Хамар-Дабан",local:"Хамар дабаан",type:"Ороним",coords:[51.55,103.7],about:"Горная система на южном побережье Байкала.",etymology:"Название перевала, распространённое на хребет. С бурятского «хамар» — «короткий отрог, выступ, нос», «дабан» — «перевал», то есть «носовидный перевал». Существует также версия о связи с «hамараhан» — «кедр», то есть «кедровая гора».",variants:"Хамар-Дабан; Хамар дабаан.",source:"Демонстрационный текст; требуется научная проверка."}
+];
+
+const colors={Гидроним:"#238b91",Ороним:"#c28a45",Топоним:"#748e65"};
+
+/* ===== SVG-МЕТКИ С ПИКТОГРАММАМИ =====
+   Цвет фона = тип объекта; форма внутри = что это за объект. */
+const PICTO={
+  Гидроним:`<path d="M6 20 Q9 16 12 20 T18 20 T24 20" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M6 25 Q9 21 12 25 T18 25 T24 25" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>`,
+  Ороним:`<path d="M4 27 L11 15 L15 21 L18 17 L26 27 Z" fill="#fff"/>`,
+  Топоним:`<path d="M5 27 V18 L13 12 L21 18 V27 Z" fill="#fff"/>
+           <rect x="11" y="21" width="4" height="6" fill="COLOR_PLACEHOLDER"/>`
+};
+
+function makeIcon(type,color){
+  const picto=PICTO[type].replace("COLOR_PLACEHOLDER",color);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="34" height="46" viewBox="0 0 34 46">
+    <path d="M17 45C17 45 31 29 31 17.5A14 14 0 1 0 3 17.5C3 29 17 45 17 45Z"
+          fill="${color}" stroke="#ffffff" stroke-width="2"/>
+    <g transform="translate(1,3)">${picto}</g>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+
+/* ===== СОСТОЯНИЕ ===== */
+let map=null,marks={},filter="Все",selected=null;
+
+/* ===== СПИСОК ===== */
+function render(){
+  let q=document.getElementById("search").value.toLowerCase();
+  let arr=places.filter(p=>(filter==="Все"||p.type===filter)&&(p.name.toLowerCase().includes(q)||p.local.toLowerCase().includes(q)));
+  document.getElementById("list").innerHTML=arr.map(p=>`<div class="place ${selected===p.id?"selected":""}" data-id="${p.id}"><i class="dot" style="background:${colors[p.type]}"></i><b>${p.name}</b><small>${p.type} · ${p.local}</small></div>`).join("")||"<p>Ничего не найдено</p>";
+  document.querySelectorAll(".place").forEach(el=>el.onclick=()=>select(+el.dataset.id,true));
+}
+
+/* ===== КАРТОЧКА + ЦЕНТРИРОВАНИЕ ===== */
+function select(id,pan){
+  let p=places.find(x=>x.id===id);
+  selected=id;
+  document.getElementById("content").innerHTML=`<div class="kind">${p.type}</div><h2>${p.name}</h2><div class="local">${p.local}</div><h3>Об объекте</h3><p>${p.about}</p><h3>Этимология</h3><p>${p.etymology}</p><h3>Варианты названия</h3><p>${p.variants}</p><h3>Источники и комментарии</h3><p class="source">${p.source}</p>`;
+  document.getElementById("card").classList.add("open");
+  render();
+  if(pan&&map){
+    const obj=marks[p.id];
+    if(obj&&obj.geometry&&typeof obj.geometry.getBounds==="function"){
+      map.setBounds(obj.geometry.getBounds(),{checkZoomRange:true,zoomMargin:60,duration:250});
+    }else{
+      map.setCenter(p.coords,9,{duration:250});
+    }
+  }
+}
+
+document.getElementById("close").onclick=()=>document.getElementById("card").classList.remove("open");
+document.getElementById("search").oninput=render;
+document.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{
+  filter=b.dataset.type;
+  document.querySelectorAll(".filters button").forEach(x=>x.classList.toggle("active",x===b));
+  places.forEach(p=>{if(marks[p.id])marks[p.id].options.set("visible",filter==="Все"||p.type===filter)});
+  render();
+});
+render();
+
+/* ===== ИНИЦИАЛИЗАЦИЯ КАРТЫ ===== */
+function initMap(){
+  document.getElementById("notice").style.display="none";
+  map=new ymaps.Map("map",{center:[52.8,105.1],zoom:6,controls:["zoomControl","typeSelector","fullscreenControl"]});
+
+  places.forEach(p=>{
+    let obj;
+    if(p.polygon){
+      /* Территория: закрашенный полигон */
+      obj=new ymaps.Polygon([p.polygon],{
+        hintContent:p.name,
+        balloonContentHeader:p.name,
+        balloonContentBody:`${p.type}<br><a href="#" onclick="select(${p.id},false);return false">Открыть этимологическую карточку</a>`
+      },{
+        fillColor:colors[p.type]+"55",
+        strokeColor:colors[p.type],
+        strokeWidth:2,
+        strokeStyle:"dash"
+      });
+    }else if(p.radius){
+      /* Ареал: полупрозрачный круг */
+      obj=new ymaps.Circle([p.coords,p.radius],{
+        hintContent:p.name,
+        balloonContentHeader:p.name,
+        balloonContentBody:`${p.type}<br><a href="#" onclick="select(${p.id},false);return false">Открыть этимологическую карточку</a>`
+      },{
+        fillColor:colors[p.type]+"33",
+        strokeColor:colors[p.type],
+        strokeWidth:1
+      });
+    }else{
+      /* Точка: SVG-метка с пиктограммой */
+      obj=new ymaps.Placemark(p.coords,{
+        hintContent:p.name,
+        balloonContentHeader:p.name,
+        balloonContentBody:`${p.type}<br><a href="#" onclick="select(${p.id},false);return false">Открыть этимологическую карточку</a>`
+      },{
+        iconLayout:"default#image",
+        iconImageHref:makeIcon(p.type,colors[p.type]),
+        iconImageSize:[34,46],
+        iconImageOffset:[-17,-46]
+      });
+    }
+    obj.events.add("click",()=>select(p.id,false));
+    map.geoObjects.add(obj);
+    marks[p.id]=obj;
+  });
+
+  let bounds=map.geoObjects.getBounds();
+  if(bounds)map.setBounds(bounds,{checkZoomRange:true,zoomMargin:50});
+}
+
+/* ===== ЗАГРУЗКА API ===== */
+if(YANDEX_API_KEY!==""){
+  let s=document.createElement("script");
+  s.src="https://api-maps.yandex.ru/2.1/?apikey="+encodeURIComponent(YANDEX_API_KEY)+"&lang=ru_RU";
+  s.onload=()=>ymaps.ready(initMap);
+  s.onerror=()=>document.getElementById("notice").textContent="Яндекс Карта не загрузилась: проверьте ключ и подключение.";
+  document.head.appendChild(s);
+}
+</script>
+</body>
+</html>
